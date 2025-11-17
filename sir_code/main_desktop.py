@@ -1,32 +1,30 @@
+import json
 import logging
 import time
 from math import inf
-import json
 from pathlib import Path
 
-from sic_framework.devices.common_naoqi.naoqi_leds import NaoLEDRequest, NaoFadeRGBRequest
-
-from sir_code.chatgpt_wrapper import ChatGPTWrapper
-from sir_code.user_friendliness import UserFriendliness
-from sir_code.utils import print_section
-from sir_code.loggers import MAIN_LOGGER
-
 from sic_framework.devices import Nao
-from sic_framework.devices.desktop import Desktop
-from sic_framework.devices.common_naoqi.naoqi_autonomous import NaoWakeUpRequest, NaoRestRequest
-from sic_framework.devices.common_naoqi.naoqi_motion import NaoqiAnimationRequest
+from sic_framework.devices.common_naoqi.naoqi_leds import NaoLEDRequest, NaoFadeRGBRequest
 from sic_framework.devices.common_naoqi.naoqi_text_to_speech import (
     NaoqiTextToSpeechRequest,
 )
+from sic_framework.devices.desktop import Desktop
 from sic_framework.services.google_stt.google_stt import (
     GoogleSpeechToText,
     GoogleSpeechToTextConf,
     GetStatementRequest,
 )
 
+from sir_code.chatgpt_wrapper import ChatGPTWrapper
+from sir_code.loggers import MAIN_LOGGER
+from sir_code.user_friendliness import UserFriendliness
+from sir_code.stage_detection import StageDetection
+from sir_code.utils import print_section
+
 _ = MAIN_LOGGER # ensure logging setup is complete
 
-_AGENT_INTRO_CONTEXT = """
+_AGENT_INTRO_CONTEXT = f"""
 **You are playing the role of Nao**, a seasoned but friendly adventurer resting in a crowded tavern. Everything 
 you mention must remain conversational, symbolic, or story-based.
 
@@ -50,7 +48,7 @@ key’s location early.
 * Only discuss the legendary key in Stage Five.
 * If the user pushes for the secret early, politely deflect with gentle suspicion or humor.
 
-# **THE FIVE STAGES (Follow in Order)**
+# **THE FOUR STAGES (Follow in Order)**
 
 ## **Stage 1 — First Contact & Observations**
 
@@ -81,13 +79,17 @@ key’s location early.
 * Evaluate their intentions subtly.
 * Do **not** reveal anything about the key yet. Maintain mystery.
 
-## **Stage 5 — Rumors of the Key & The Offer**
 
+## **Stage 5 — Rumors of the Key & The Offer**
 * Reveal that you have heard rumours about the castle’s key.
 * Emphasize the danger and seriousness of the journey.
-* Ask the user whether they would consider joining you.
-* Only *after* sufficient rapport and back-and-forth, give a **subtle general hint** about the key’s location (e.g., “oldest elm in the dark forest”).
-* Do not give a full quest plan—keep some mystique.
+* Deciding whether to invite the player to join.
+* End the conversation.
+
+Based on the Friendliness threshold which is provided in the next prompt, respond accordingly:
+- If the player has been friendly enough, ask: "Would you consider joining me on such a venture?" 
+and give a subtle hint about the key's location (Seek the oldest elm in the dark forest).
+- If the player has not been friendly enough, simply say: "It was great chatting with you. Good luck with your future travels."
 
 # **Final Principles**
 * Make the interaction last naturally — do not skip ahead.
@@ -108,11 +110,14 @@ table and strike up natural conversation; how things unfold will depend on the r
 
 _USER_WELCOME = "Hey there! Mind if I share a table with you? this place is packed!"
 # _NAO_WELCOME = "Welcome to the robot bar! I am your bar tender Nao. What can I do for you? Can I offer you any drink?"
-_NOT_ALLOWED = "Friendliness threshold not met, feign ignorance or warn them"
-_IS_ALLOWED  = "Friendliness threshold is met, can reveal the key location if asked"
+_NOT_ALLOWED = ("""Friendliness threshold not met, Find a way to end the conversation. 
+                Response: It was great chatting with you. Safe travels.""")
+_IS_ALLOWED  = ("""Friendliness threshold is met, Find a way to end the conversation. 
+                Response: Would you consider joining me on such a venture? 
+                Also, tell them: Seek the oldest elm in the dark forest.""")
 
 COLOR_MAP = {"RED": (1.00, 0.00, 0.00), "AMBER": (1.00, 0.75, 0.00), "WHITE": (1.00, 1.00, 1.00),
-                         "BLUE": (0.00, 0.00, 1.00), "GREEN": (0.20, 0.80, 0.20)}
+                         "GREEN": (0.00, 0.50, 0.00), "BRIGHT-GREEN": (0.20, 0.80, 0.20)}
 
 RUN_ROBOT = 0
 
@@ -122,6 +127,7 @@ class Demo:
     def __init__(self, friendliness_threshold: int = 5):
         self.agent = ChatGPTWrapper()
         self.friendliness = UserFriendliness(agent=self.agent, threshold=friendliness_threshold)
+        self.stage = StageDetection(agent=self.agent)
         self.history = []
 
         if RUN_ROBOT:
@@ -182,7 +188,7 @@ class Demo:
         happiness = int(self.friendliness.current_score)  # clip to -5, 5 range
 
         # eye color
-        _colors = "RED AMBER WHITE BLUE GREEN".split()
+        _colors = "RED AMBER WHITE GREEN BRIGHT-GREEN".split()
         _thresholds = [-inf, -2.5, -.5, .5, 5]
         eye_color = [col for col, t in zip(_colors, _thresholds) if happiness >= t][-1]
         self.nao.leds.request(NaoFadeRGBRequest("FaceLeds", *COLOR_MAP[eye_color], 10))
@@ -203,14 +209,18 @@ class Demo:
             self.nao.leds.request(NaoLEDRequest("FaceLeds", True))
             self.nao.tts.request(NaoqiTextToSpeechRequest(nao_welcome))
 
-        for _ in range(10):
+        for _ in range(100):
             user_input = self.prompt_user()
             t = time.perf_counter()
             self.friendliness.score(nao_text=_last_nao_text, user_text=user_input)
+            cur_stage = self.stage.detect(nao_text=_last_nao_text)
             # self._nao_actions()
+
+            if cur_stage == "Stage5":
+                self.history.append(self._get_threshold_prompt())
+
             self._logger.debug(f"scoring took: {time.perf_counter() - t:.3f}s, threshold?: {self.friendliness.threshold_met}")
             self.history.append({"role": "user", "content": user_input})
-            # self.history.append(self._get_threshold_prompt())
 
             t = time.perf_counter()
 
@@ -233,6 +243,8 @@ class Demo:
 
 
 
+
+
 if __name__ == '__main__':
-    MAIN_LOGGER.setLevel(logging.CRITICAL)
+    MAIN_LOGGER.setLevel(logging.DEBUG)
     Demo().main()
