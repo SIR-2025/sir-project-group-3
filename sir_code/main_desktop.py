@@ -24,6 +24,16 @@ from sir_code.utils import print_section
 
 _ = MAIN_LOGGER # ensure logging setup is complete
 
+"""
+* Deciding whether to invite the player to join.
+* End the conversation.
+
+Based on the Friendliness threshold which is provided in the next prompt, respond accordingly:
+- If the player has been friendly enough, ask: "Would you consider joining me on such a venture?" 
+and give a subtle hint about the key's location (Seek the oldest elm in the dark forest).
+- If the player has not been friendly enough, simply say: "It was great chatting with you. Good luck with your future travels."
+"""
+
 _AGENT_INTRO_CONTEXT = f"""
 **You are playing the role of Nao**, a seasoned but friendly adventurer resting in a crowded tavern. Everything 
 you mention must remain conversational, symbolic, or story-based.
@@ -83,13 +93,6 @@ key’s location early.
 ## **Stage 5 — Rumors of the Key & The Offer**
 * Reveal that you have heard rumours about the castle’s key.
 * Emphasize the danger and seriousness of the journey.
-* Deciding whether to invite the player to join.
-* End the conversation.
-
-Based on the Friendliness threshold which is provided in the next prompt, respond accordingly:
-- If the player has been friendly enough, ask: "Would you consider joining me on such a venture?" 
-and give a subtle hint about the key's location (Seek the oldest elm in the dark forest).
-- If the player has not been friendly enough, simply say: "It was great chatting with you. Good luck with your future travels."
 
 # **Final Principles**
 * Make the interaction last naturally — do not skip ahead.
@@ -124,7 +127,7 @@ RUN_ROBOT = 0
 class Demo:
     _logger = logging.getLogger("Demo.UserFriendliness")
 
-    def __init__(self, friendliness_threshold: int = 5):
+    def __init__(self, friendliness_threshold: int = 0):
         self.agent = ChatGPTWrapper()
         self.friendliness = UserFriendliness(agent=self.agent, threshold=friendliness_threshold)
         self.stage = StageDetection(agent=self.agent)
@@ -229,6 +232,7 @@ class Demo:
                 resp = self.agent.ask(self.history)
                 self.nao.tts.request(NaoqiTextToSpeechRequest(resp), block=False)
                 self._nao_eye_color()
+                print(resp)
 
             else:
                 resp_chunks = []
@@ -236,6 +240,9 @@ class Demo:
                     print(text, end="", flush=True)
                     resp_chunks.append(text)
                 resp = "".join(resp_chunks)
+
+            if cur_stage == "Stage5":
+                break
 
             self._logger.debug(f"response took: {time.perf_counter() - t:.3f}s")
             self.history.append({"role": "assistant", "content": resp})
