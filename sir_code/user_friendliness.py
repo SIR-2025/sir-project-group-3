@@ -38,6 +38,7 @@ class UserFriendliness:
     }
     _resp_regex = re.compile(r"^\s*([A-H])(?:\s*,\s*([A-H]))*\s*$")
     _logger = logging.getLogger("Demo.UserFriendliness")
+    _logger.setLevel(logging.CRITICAL)
 
     scoring_history: List[str]
     current_score: int | float

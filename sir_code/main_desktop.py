@@ -1,11 +1,14 @@
 import json
 import logging
 import time
+from logging import lastResort
 from math import inf
 from pathlib import Path
 
 from sic_framework.devices import Nao
+from sic_framework.devices.common_naoqi.naoqi_autonomous import NaoWakeUpRequest, NaoBasicAwarenessRequest
 from sic_framework.devices.common_naoqi.naoqi_leds import NaoLEDRequest, NaoFadeRGBRequest
+from sic_framework.devices.common_naoqi.naoqi_motion import NaoPostureRequest, NaoqiIdlePostureRequest
 from sic_framework.devices.common_naoqi.naoqi_text_to_speech import (
     NaoqiTextToSpeechRequest,
 )
@@ -16,6 +19,7 @@ from sic_framework.services.google_stt.google_stt import (
     GetStatementRequest,
 )
 
+from sir_code.action import Action
 from sir_code.chatgpt_wrapper import ChatGPTWrapper
 from sir_code.loggers import MAIN_LOGGER
 from sir_code.user_friendliness import UserFriendliness
@@ -131,12 +135,12 @@ class Demo:
         self.agent = ChatGPTWrapper()
         self.friendliness = UserFriendliness(agent=self.agent, threshold=friendliness_threshold)
         self.stage = StageDetection(agent=self.agent)
+        self.actions = Action(agent=self.agent)
         self.history = []
 
         if RUN_ROBOT:
             # nao config
             self.nao = Nao(ip="10.0.0.211")
-
             # input config
             self.desktop = Desktop()
             stt_conf = GoogleSpeechToTextConf(
@@ -148,14 +152,16 @@ class Demo:
             self.stt = GoogleSpeechToText(conf=stt_conf, input_source=self.desktop.mic)
 
 
-    def prompt_user(self):
-        if RUN_ROBOT:
-            result = self.stt.request(GetStatementRequest())
-            # alternative is a list of possible transcripts, we take the first one which is the most likely
-            user_input = result.response.alternatives[0].transcript
-            print("User:", user_input)
-            return user_input
-        return input("User (enter prompt):\n")
+    def prompt_user_audio(self):
+        result = self.stt.request(GetStatementRequest())
+        # alternative is a list of possible transcripts, we take the first one which is the most likely
+        user_input = result.response.alternatives[0].transcript
+        print(f"User: {user_input}\n")
+        return user_input
+
+    @staticmethod
+    def prompt_user():
+        return input("\nUser (enter prompt):\n")
 
     @staticmethod
     def _describe_game():
@@ -201,25 +207,31 @@ class Demo:
         self.history.append({"role": "system", "content": _AGENT_INTRO_CONTEXT})
         self.history.append({"role": "user", "content": _USER_WELCOME})
         self._describe_game()
+
         nao_welcome = self.agent.ask(self.history)
         self.history.append({"role": "assistant", "content": nao_welcome})
         _last_nao_text = nao_welcome
-
-        print(f"User: {_USER_WELCOME}")
-        print(f"Nao: {nao_welcome}")
+        self.actions.detect(nao_text=_last_nao_text)
 
         if RUN_ROBOT:
-            self.nao.leds.request(NaoLEDRequest("FaceLeds", True))
+            self.prompt_user_audio()
+            print(f"Nao: {nao_welcome}")
             self.nao.tts.request(NaoqiTextToSpeechRequest(nao_welcome))
+            self.nao.leds.request(NaoLEDRequest("FaceLeds", True))
+        else:
+            print(f"User: {_USER_WELCOME}")
+            print(f"Nao: {nao_welcome}")
 
         for _ in range(100):
-            user_input = self.prompt_user()
+            if RUN_ROBOT:
+                user_input = self.prompt_user_audio()
+            else:
+                user_input = self.prompt_user()
             t = time.perf_counter()
             self.friendliness.score(nao_text=_last_nao_text, user_text=user_input)
-            cur_stage = self.stage.detect(nao_text=_last_nao_text)
-            # self._nao_actions()
+            last_stage = self.stage.detect(nao_text=_last_nao_text)
 
-            if cur_stage == "Stage5":
+            if last_stage == "Stage5":
                 self.history.append(self._get_threshold_prompt())
 
             self._logger.debug(f"scoring took: {time.perf_counter() - t:.3f}s, threshold?: {self.friendliness.threshold_met}")
@@ -230,6 +242,7 @@ class Demo:
             print("Nao:")
             if RUN_ROBOT:
                 resp = self.agent.ask(self.history)
+                self.actions.detect(nao_text=resp)
                 self.nao.tts.request(NaoqiTextToSpeechRequest(resp), block=False)
                 self._nao_eye_color()
                 print(resp)
@@ -240,16 +253,14 @@ class Demo:
                     print(text, end="", flush=True)
                     resp_chunks.append(text)
                 resp = "".join(resp_chunks)
+                self.actions.detect(nao_text=resp)
 
-            if cur_stage == "Stage5":
+            if last_stage == "Stage5":
                 break
 
             self._logger.debug(f"response took: {time.perf_counter() - t:.3f}s")
             self.history.append({"role": "assistant", "content": resp})
             _last_nao_text = resp
-
-
-
 
 
 if __name__ == '__main__':

@@ -49,6 +49,7 @@ class StageDetection:
 
 
     _logger = logging.getLogger("Demo.StageDetection")
+    _logger.setLevel(logging.CRITICAL)
 
     stage_history: List[str]
     current_stage: str
@@ -86,7 +87,7 @@ class StageDetection:
         given_resp = "\n".join(f"{k}) {v}" for k, v in self.descriptions.items() if k in letters)
         self._logger.debug(
             f"\ndetect response: {resp}, "
-            f":\n{given_resp}, "
+            # f":\n{given_resp}, "
             f"\nletters: {letters}, "
             f":\ncurrent stage: {self.current_stage}, "
         )
