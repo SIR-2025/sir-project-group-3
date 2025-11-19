@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+from concurrent.futures import ThreadPoolExecutor as TPool
 from math import inf
 from pathlib import Path
 
@@ -177,24 +178,47 @@ class Demo:
     def _get_threshold_prompt(self):
         return {"role": "system", "content": (_NOT_ALLOWED, _IS_ALLOWED)[self.friendliness.threshold_met]}
 
-    def _nao_actions(self, nao_text):
-        actions = self.actions.detect(nao_text=nao_text)
+    # def _nao_actions(self, nao_text):
+    #     actions = self.actions.detect(nao_text=nao_text)
+    #     for action in actions:
+    #         self._logger.debug(
+    #         f"\ncurrent_action: {action},"
+    #         )
+    #         self.nao.motion_record.request(PlayRecording(NaoqiMotionRecording.load(f"actions/{action}.motion")))
+
+    def _nao_actions(self, actions):
+        # actions = self.actions.detect(nao_text=nao_text)
         for action in actions:
             self._logger.debug(
             f"\ncurrent_action: {action},"
             )
             self.nao.motion_record.request(PlayRecording(NaoqiMotionRecording.load(f"actions/{action}.motion")))
 
-    def _nao_eye_color(self):
-        assert self.friendliness.scoring_history, "no scoring history"
+    # def _nao_eye_color(self):
+    #     assert self.friendliness.scoring_history, "no scoring history"
+    #     happiness = int(self.friendliness.current_score)  # clip to -5, 5 range
+    #
+    #     # eye color
+    #     _colors = "RED AMBER WHITE GREEN BRIGHT-GREEN".split()
+    #     _thresholds = [-inf, -2.5, -.5, .5, 5]
+    #     eye_color = [col for col, t in zip(_colors, _thresholds) if happiness >= t][-1]
+    #     self.nao.leds.request(NaoFadeRGBRequest("FaceLeds", *COLOR_MAP[eye_color], 10))
+    #     print(f"NAO: *eyes are {eye_color}*")
+
+    def _nao_action_and_eye_color(self, nao_text):
+        actions = self.actions.detect(nao_text=nao_text)
         happiness = int(self.friendliness.current_score)  # clip to -5, 5 range
 
         # eye color
         _colors = "RED AMBER WHITE GREEN BRIGHT-GREEN".split()
         _thresholds = [-inf, -2.5, -.5, .5, 5]
         eye_color = [col for col, t in zip(_colors, _thresholds) if happiness >= t][-1]
-        self.nao.leds.request(NaoFadeRGBRequest("FaceLeds", *COLOR_MAP[eye_color], 10))
         print(f"NAO: *eyes are {eye_color}*")
+
+        with TPool(max_workers=2) as executor:
+            executor.submit(self._nao_actions, actions)
+            executor.submit(self.nao.leds.request(NaoFadeRGBRequest("FaceLeds", *COLOR_MAP[eye_color], 10)))
+
 
     def main(self):
         self.history.append({"role": "system", "content": _AGENT_INTRO_CONTEXT})
@@ -210,7 +234,8 @@ class Demo:
             print(f"Nao: {nao_welcome}")
             self.nao.tts.request(NaoqiTextToSpeechRequest(nao_welcome, speed=self.audio_speed,
                                 pitch=self.audio_pitch), block=False)
-            self._nao_actions(nao_text=_last_nao_text)
+            # self._nao_actions(nao_text=_last_nao_text)
+            self._nao_action_and_eye_color(nao_text=_last_nao_text)
         else:
             print(f"User: {_USER_WELCOME}")
             print(f"Nao: {nao_welcome}")
@@ -238,8 +263,10 @@ class Demo:
                 print(resp)
                 self.nao.tts.request(NaoqiTextToSpeechRequest(resp, speed=self.audio_speed,
                                     pitch=self.audio_pitch), block=False)
-                self._nao_actions(nao_text=resp)
-                self._nao_eye_color()
+
+                # self._nao_actions(nao_text=resp)
+                # self._nao_eye_color()
+                self._nao_action_and_eye_color(nao_text=_last_nao_text)
 
             else:
                 resp_chunks = []
