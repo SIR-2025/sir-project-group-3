@@ -1,14 +1,14 @@
 import json
 import logging
 import time
-from logging import lastResort
 from math import inf
 from pathlib import Path
 
 from sic_framework.devices import Nao
-from sic_framework.devices.common_naoqi.naoqi_autonomous import NaoWakeUpRequest, NaoBasicAwarenessRequest
 from sic_framework.devices.common_naoqi.naoqi_leds import NaoLEDRequest, NaoFadeRGBRequest
-from sic_framework.devices.common_naoqi.naoqi_motion import NaoPostureRequest, NaoqiIdlePostureRequest
+from sic_framework.devices.common_naoqi.naoqi_motion import NaoqiAnimationRequest
+from sic_framework.devices.common_naoqi.naoqi_motion_recorder import NaoqiMotionRecording, PlayRecording
+from sic_framework.devices.common_naoqi.naoqi_stiffness import Stiffness
 from sic_framework.devices.common_naoqi.naoqi_text_to_speech import (
     NaoqiTextToSpeechRequest,
 )
@@ -22,8 +22,8 @@ from sic_framework.services.google_stt.google_stt import (
 from sir_code.action import Action
 from sir_code.chatgpt_wrapper import ChatGPTWrapper
 from sir_code.loggers import MAIN_LOGGER
-from sir_code.user_friendliness import UserFriendliness
 from sir_code.stage_detection import StageDetection
+from sir_code.user_friendliness import UserFriendliness
 from sir_code.utils import print_section
 
 _ = MAIN_LOGGER # ensure logging setup is complete
@@ -116,7 +116,6 @@ table and strike up natural conversation; how things unfold will depend on the r
 """
 
 _USER_WELCOME = "Hey there! Mind if I share a table with you? this place is packed!"
-# _NAO_WELCOME = "Welcome to the robot bar! I am your bar tender Nao. What can I do for you? Can I offer you any drink?"
 _NOT_ALLOWED = ("""Friendliness threshold not met, Find a way to end the conversation. 
                 Response: It was great chatting with you. Safe travels.""")
 _IS_ALLOWED  = ("""Friendliness threshold is met, Find a way to end the conversation. 
@@ -126,10 +125,10 @@ _IS_ALLOWED  = ("""Friendliness threshold is met, Find a way to end the conversa
 COLOR_MAP = {"RED": (1.00, 0.00, 0.00), "AMBER": (1.00, 0.75, 0.00), "WHITE": (1.00, 1.00, 1.00),
                          "GREEN": (0.00, 0.50, 0.00), "BRIGHT-GREEN": (0.20, 0.80, 0.20)}
 
-RUN_ROBOT = 0
+RUN_ROBOT = 1
 
 class Demo:
-    _logger = logging.getLogger("Demo.UserFriendliness")
+    _logger = logging.getLogger("Demo.main")
 
     def __init__(self, friendliness_threshold: int = 0):
         self.agent = ChatGPTWrapper()
@@ -137,6 +136,8 @@ class Demo:
         self.stage = StageDetection(agent=self.agent)
         self.actions = Action(agent=self.agent)
         self.history = []
+        self.audio_speed = 90
+        self.audio_pitch = 85
 
         if RUN_ROBOT:
             # nao config
@@ -150,6 +151,9 @@ class Demo:
                 interim_results=False,
             )
             self.stt = GoogleSpeechToText(conf=stt_conf, input_source=self.desktop.mic)
+
+            self.nao.leds.request(NaoLEDRequest("FaceLeds", True))
+            self.nao.stiffness.request(Stiffness(stiffness=0.3, joints="Body".split()))
 
 
     def prompt_user_audio(self):
@@ -173,24 +177,13 @@ class Demo:
     def _get_threshold_prompt(self):
         return {"role": "system", "content": (_NOT_ALLOWED, _IS_ALLOWED)[self.friendliness.threshold_met]}
 
-    def _nao_actions(self):
-        assert self.friendliness.scoring_history, "no scoring history"
-        letters  = self.friendliness.scoring_history[-1]
-        happiness = int(self.friendliness.current_score) # clip to -5, 5 range
-
-        action_map = {
-            "A": "hands over drink",
-            "B": "hands over food",
-            "H": "points towards dark forest",
-        }
-        actions = {action_map[c] for c in letters if c in action_map}
-        _colors = "RED AMBER WHITE GREEN BRIGHT-GREEN".split()
-        _thresholds = [-inf, -2.5, -.5, .5, 5]
-        eye_color = [col for col, t in zip(_colors, _thresholds) if happiness >= t][-1]
-
-        actions.add(f"eyes are {eye_color}")
+    def _nao_actions(self, nao_text):
+        actions = self.actions.detect(nao_text=nao_text)
         for action in actions:
-            print(f"NAO: *{action}*")
+            self._logger.debug(
+            f"\ncurrent_action: {action},"
+            )
+            self.nao.motion_record.request(PlayRecording(NaoqiMotionRecording.load(f"actions/{action}.motion")))
 
     def _nao_eye_color(self):
         assert self.friendliness.scoring_history, "no scoring history"
@@ -211,13 +204,13 @@ class Demo:
         nao_welcome = self.agent.ask(self.history)
         self.history.append({"role": "assistant", "content": nao_welcome})
         _last_nao_text = nao_welcome
-        self.actions.detect(nao_text=_last_nao_text)
 
         if RUN_ROBOT:
-            self.prompt_user_audio()
+            self.prompt_user()
             print(f"Nao: {nao_welcome}")
-            self.nao.tts.request(NaoqiTextToSpeechRequest(nao_welcome))
-            self.nao.leds.request(NaoLEDRequest("FaceLeds", True))
+            self.nao.tts.request(NaoqiTextToSpeechRequest(nao_welcome, speed=self.audio_speed,
+                                pitch=self.audio_pitch), block=False)
+            self._nao_actions(nao_text=_last_nao_text)
         else:
             print(f"User: {_USER_WELCOME}")
             print(f"Nao: {nao_welcome}")
@@ -242,10 +235,11 @@ class Demo:
             print("Nao:")
             if RUN_ROBOT:
                 resp = self.agent.ask(self.history)
-                self.actions.detect(nao_text=resp)
-                self.nao.tts.request(NaoqiTextToSpeechRequest(resp), block=False)
-                self._nao_eye_color()
                 print(resp)
+                self.nao.tts.request(NaoqiTextToSpeechRequest(resp, speed=self.audio_speed,
+                                    pitch=self.audio_pitch), block=False)
+                self._nao_actions(nao_text=resp)
+                self._nao_eye_color()
 
             else:
                 resp_chunks = []

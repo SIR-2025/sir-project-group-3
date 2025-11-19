@@ -1,6 +1,5 @@
 import logging
 import re
-from typing import List
 
 from sir_code.lib import Agent
 from sir_code.loggers import MAIN_LOGGER
@@ -18,14 +17,15 @@ class Action:
         "A": "Nod your head",
         "B": "Lift one arm to your chest",
         "C": "Open one arm widely",
-        "E": "Lift one arm to your chin, thinking posture",
+        "E": "Lift one arm to your chin, pointing to yourself",
         "F": "Place a hand over your heart, show respect",
         "G": "Gently tap your lips or temple to suggest secrecy or whispering",
-        "H": "Tilt your head slightly to the side to show attentiveness",
+        # "H": "Tilt your head slightly to the side to show attentiveness",
     }
 
     _resp_regex = re.compile(r"^\s*([A-H])(?:\s*,\s*([A-H]))*\s*$")
     _logger = logging.getLogger("Demo.Action")
+    _logger.setLevel(logging.CRITICAL)
 
 
     def __init__(self, agent: Agent):
