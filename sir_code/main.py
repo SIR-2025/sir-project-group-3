@@ -263,11 +263,9 @@ class Demo:
         _thresholds = [-inf, -2.5, -.5, .5, 5]
         eye_color = [col for col, t in zip(_colors, _thresholds) if happiness >= t][-1]
         print(f"NAO: *eyes are {eye_color}*")
-
         with TPool(max_workers=2) as executor:
             executor.submit(self._nao_actions, actions)
-            executor.submit(self.nao.leds.request(NaoFadeRGBRequest("FaceLeds", *COLOR_MAP[eye_color], 10)))
-
+            executor.submit(self.nao.leds.request, NaoFadeRGBRequest("FaceLeds", *COLOR_MAP[eye_color], 10))
 
     def main(self):
         self.history.append({"role": "system", "content": _AGENT_INTRO_CONTEXT})
