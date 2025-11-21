@@ -123,6 +123,55 @@ _IS_ALLOWED  = ("""Friendliness threshold is met, Find a way to end the conversa
                 Response: Would you consider joining me on such a venture? 
                 Also, tell them: Seek the oldest elm in the dark forest.""")
 
+_DYNAMIC_SPEECH = """
+Generate dialogue **for a NAO robot** using its TTS control tags to create natural, expressive speech.
+
+## **TTS TAGS**
+
+**Pitch:** \\vct=value\\
+
+* Range: **50–200**
+* Slight upward pitch for questions; slight variations for expressiveness.
+
+**Speaking rate:** \\rspd=value\\
+
+* Range: **50–400**
+* Slow for emphasis; slightly faster for enthusiasm or light energy.
+
+**Pause:** \\pau=value\\
+
+* Value = milliseconds
+* Short pauses for breathing; longer for dramatic effect.
+
+**Volume:** \\vol=value\\
+
+* Range: **10–80**
+* Small changes only; softer for calm moments.
+
+**Reset:** \\rst\\
+
+* Returns all settings to default when needed.
+
+---
+
+## **STYLE GUIDELINES**
+
+* Aim for **natural conversational flow**, not robotic monotony.
+* Vary pitch, speed, and volume **subtly**.
+* Add pauses (100–1000 ms) to simulate breathing, thinking, or transitions.
+* Use slight pitch lifts at the end of questions.
+* Use volume or speed changes only for emphasis.* Output text should be have tags intact.
+* **It is extremely important that all TTS tags ALWAYS use double backslashes before and after, exactly like this: \\tag=value\\**
+* Always remember to add \\rst\\ where the effect should end.
+
+---
+
+## **EXAMPLE SENTENCE**
+
+I’ll start softly \\vol=40\\like this.\\rst\\ Now I’ll slow down \\rspd=70\\for a moment.\\rst\\ Then I’ll raise my pitch \\vct=150\\right here?\\rst\\ \\pau=600\\And now we continue.
+
+"""
+
 COLOR_MAP = {"RED": (1.00, 0.00, 0.00), "AMBER": (1.00, 0.75, 0.00), "WHITE": (1.00, 1.00, 1.00),
                          "GREEN": (0.00, 0.50, 0.00), "BRIGHT-GREEN": (0.20, 0.80, 0.20)}
 
@@ -225,7 +274,9 @@ class Demo:
         self.history.append({"role": "user", "content": _USER_WELCOME})
         self._describe_game()
 
+        self.history.append({"role": "system", "content": _DYNAMIC_SPEECH})
         nao_welcome = self.agent.ask(self.history)
+        self.history.pop()
         self.history.append({"role": "assistant", "content": nao_welcome})
         _last_nao_text = nao_welcome
 
@@ -259,7 +310,9 @@ class Demo:
 
             print("Nao:")
             if RUN_ROBOT:
+                self.history.append({"role": "system", "content": _DYNAMIC_SPEECH})
                 resp = self.agent.ask(self.history)
+                self.history.pop()
                 print(resp)
                 self.nao.tts.request(NaoqiTextToSpeechRequest(resp, speed=self.audio_speed,
                                     pitch=self.audio_pitch), block=False)
