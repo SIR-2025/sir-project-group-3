@@ -33,3 +33,5 @@ conf/.env
 
 # Ignore dialogflow keyfiles
 conf/google/*.json
+
+sir_code/conf
