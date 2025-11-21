@@ -1,15 +1,49 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/18O6qkbP)
-# SIC-SIR Template
-Template for group projects of Socially Intelligent Robotics (SIR) of the Vrije Universiteit Amsterdam (VU) in 2025.
+# Configuration Files
 
-# Instructions
-- You can follow the SIC installation instructions with this repository instead of sic_applications.
-- You can add all your project code in root and subfolders. 
-- Regularly commit and push your updates.
-- Make sure to acknowledge the contributions of involved team members (in commit messages and in individual logbook).
-- You will receive feedback on your code in week 5.
-- Your code will be graded in the end.
+In the `sir_code/conf` directory, add your OpenAI key and Google key in the following files:
+- `.openai-key` (for your OpenAI API key)
+- `google-key.json` (for your Google credentials)
 
-# Information
-- More info about SIC: https://social-ai-vu.github.io/social-interaction-cloud/index.html
-- More info about SIR: Canvas
+---
+
+# How to Run the Project
+
+## Setting Up Redis
+
+1. Open a new terminal window.
+2. Start the Redis server using the following command:
+
+   ```bash
+   redis-server conf/redis/redis.conf
+   ```
+
+## Starting Services
+
+1. In another terminal, run the Google Text-to-Speech service:
+
+   ```bash
+   run-google-tts
+   ```
+
+2. Start the demo by executing:
+
+   ```bash
+   python sir_code/main.py
+   ```
+
+### Running the Demo on Desktop or Robot
+
+- To run the demo on the desktop, set the `RUN_ROBOT` variable to `0` in `sir_code/main.py`.
+  
+  ```python
+  RUN_ROBOT = 0
+  ```
+
+- To run the demo on the robot, set the `RUN_ROBOT` variable to `1` in `sir_code/main.py`.
+  
+  ```python
+  RUN_ROBOT = 1
+  ```
+
+   
+   
