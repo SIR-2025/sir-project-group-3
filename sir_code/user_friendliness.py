@@ -16,25 +16,23 @@ class UserFriendliness:
 
     """
     descriptions = {
-        "A": "The traveller asks for or agrees to buy a drink",
-        "B": "The traveller asks for or agrees to buy food",
-        "C": "The traveller provides a compliment relating to the bartender/tavern/food or drink",
-        "D": "The traveller has a friendly and relaxed tone",
-        "E": "The traveller has a direct, demanding, or generally unfriendly tone",
-        "F": "The traveller is asking directly about / demanding for the location of a key",
-        "G": "The traveller is asking informally/casually/indirectly about the location of the key",
-        "H": "The bartender has given away the location of the key",
+        "A": "The traveller starts with a friendly or respectful greeting",
+        "B": "The traveller shows appreciation or thanks during the conversation",
+        "C": "The traveller willingly shares personal stories or experiences",
+        "D": "The traveller engages by asking questions about your stories or preferences",
+        "E": "The traveller expresses sympathy or understanding of your experiences or stories",
+        "F": "The traveller demonstrates impatience, tries to rush the conversation, or demands information",
+        "G": "The traveller makes dismissive, rude, or disrespectful remarks",
     }
 
     scores = {
         "A": 1,
         "B": 1,
         "C": 2,
-        "D": 0.25,
-        "E": -2,
-        "F": -2,
-        "G": -.25,
-        "H": 0,
+        "D": 2,
+        "E": 2,
+        "F": -1,
+        "G": -2,
     }
     _resp_regex = re.compile(r"^\s*([A-H])(?:\s*,\s*([A-H]))*\s*$")
     _logger = logging.getLogger("Demo.UserFriendliness")
@@ -58,8 +56,8 @@ class UserFriendliness:
         options_text = "\n".join(f"{k}) {v}" for k, v in self.descriptions.items())
         return multiline_strip(
             f"""
-            The following text is an excerpt between a bartender and a traveller in a tavern:
-            bartender: "{nao_text}"
+            The following text is an excerpt between you and a traveller in a tavern:
+            you: "{nao_text}"
             traveller: "{user_text}"
             
             Which of the following apply (can be multiple or none)? Please answer with comma separated letters (e.g 'A,B'),
