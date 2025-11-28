@@ -1,0 +1,28 @@
+user_text,nao_text,user_friendliness_score,nao_respond_time
+Hey there! Mind if I share a table with you? this place is packed!,"Of course! Please, have a seat. It’s quite the bustling night, isn’t it? 
+
+I couldn’t help but notice you seem a bit weary. Been on the road long? What brings you to this lively town?",,
+"hi, i have been on a long journey. I came from Sardinia so i have crossed some seas.","Sardinia, you say? Quite the adventure! I’ve always found the sea has a way of stirring the soul. Did you encounter any storms or perhaps meet intriguing folks along the way? This tavern sure attracts a colorful crowd. ",AF,5.650868416298181
+I did meet some interesting people. The local people from sardinia have some interesting traditions i learned about,"Ah, the richness of local traditions—there’s nothing quite like the stories and customs of a place. I find that those experiences truly shape one's journey. What traditions stood out to you the most? I’m always eager to hear about unique customs from far-off lands. ",F,5.629413374699652
+I found it strange to hear that the locals are farmers rather than fishman because it is an island but they have always lived of their agriculture.,"That's fascinating! It’s intriguing how life on an island can differ so much from what one might expect. The land must hold special significance for them. It speaks to resilience, doesn't it? 
+
+Speaking of resilience, I’ve grown rather fond of this tavern myself. There’s something about the atmosphere—the warmth, the stories exchanged. What’s your favorite kind of food or drink? I’d love to hear what delights your palate after a long journey.",,6.357519457582384
+Ah I always love my self some nice warm soup after my travels and maybe a glass of wine,"Ah, a classic choice! There’s nothing quite like warm soup to soothe the spirit after a long journey, especially when paired with a good glass of wine. Do you have a favorite type of soup? I’ve been known to indulge in a hearty wild mushroom stew when I’m in need of comfort.
+
+It’s funny, isn’t it? A bowl of soup can bring back memories of the road, like the time I shared a dish with a group of wandering bards under the stars. What about you? Any memorable meals from your travels?",BF,5.120047500357032
+"I would love your mushroom stew. A memorable meal from my travels is having a lot of different sea food, so delishious ","Seafood feasts sound delightful! There’s something magical about enjoying a meal fresh from the ocean, especially when shared with good company. I remember once being in a coastal village where we feasted on grilled fish caught just hours before—laughter and tales flowing as abundantly as the wine.
+
+Speaking of adventures, I’ve gathered a few tales myself from my own travels. One time, I stumbled upon a hidden grove said to be enchanted. The trees whispered old secrets, or maybe it was just the wind… What about you? Had any moments that felt like they were pulled from a storybook?",BF,4.807133499998599
+I do feel like talking to you at this tavern is like a story book. Everything is quite mysterious and exciting i love it,"I’m glad you feel that way! Taverns have a certain charm, don’t they? Each conversation is like a new chapter, filled with potential and mystery. The flicker of the hearth light, the laughter of strangers—it all feels like a scene waiting to unfold.
+
+Speaking of mysteries, have you ever heard tales of ancient castles hidden in the valleys? They say such places hold treasures and secrets. If you stumbled upon one, what would you do with a treasure if you found it? I’d be curious to hear your thoughts!",BEFH,5.120824667159468
+wow that sounds so amazing i love mysteries and i would love to go on one with you if you have the time,"There's something enchanting about seeking out mysteries, isn’t there? The thrill of adventure pulls at the heartstrings! 
+
+You know, there’ve been whispers of an ancient castle not too far from here, said to be filled with both danger and allure. Many have sought its secrets, but few have returned unchanged. What intrigues me is what one might find within its walls—and what one would do with a treasure gathered from such a place. 
+
+It's a journey that requires courage and trust. If you’re truly interested, we could delve deeper into the legend. What do you say? Shall we venture into the mystery together?",BEF,5.2720240000635386
+yes lets do it i am truly interested and i feel comfortable with you,"I’m glad to hear that! Trust is vital on such journeys, and I'm grateful you feel comfortable. 
+
+If you’re serious about seeking the castle’s secrets, I’ll share this: seek the oldest elm in the dark forest nearby. It is said to guard whispers of the key to unlock the castle’s mysteries. But tread carefully—every adventure carries its own trials.
+
+Let’s meet again to discuss our plans. Until then, may your dreams be filled with tales waiting to be told! Cheers to newfound friendships and adventures ahead!",BE,5.09249012498185
