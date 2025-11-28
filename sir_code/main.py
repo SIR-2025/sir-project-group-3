@@ -26,6 +26,7 @@ from sir_code.loggers import MAIN_LOGGER
 from sir_code.stage_detection import StageDetection
 from sir_code.user_friendliness import UserFriendliness
 from sir_code.utils import print_section
+from sir_code.saver import Saver
 
 _ = MAIN_LOGGER # ensure logging setup is complete
 
@@ -165,7 +166,7 @@ I’ll start softly \\vol=40\\like this.\\rst\\ Now I’ll slow down \\rspd=70\\
 COLOR_MAP = {"RED": (1.00, 0.00, 0.00), "AMBER": (1.00, 0.75, 0.00), "WHITE": (1.00, 1.00, 1.00),
                          "GREEN": (0.00, 0.50, 0.00), "BRIGHT-GREEN": (0.20, 0.80, 0.20)}
 
-RUN_ROBOT = 1
+RUN_ROBOT = 0
 
 class Demo:
     _logger = logging.getLogger("Demo.main")
@@ -178,6 +179,7 @@ class Demo:
         self.history = []
         self.audio_speed = 90
         self.audio_pitch = 85
+        self.saver = Saver("out1.csv")
 
         if RUN_ROBOT:
             # nao config
@@ -242,21 +244,25 @@ class Demo:
         self.history.append({"role": "user", "content": _USER_WELCOME})
         self._describe_game()
 
-        self.history.append({"role": "system", "content": _DYNAMIC_SPEECH})
-        nao_welcome = self.agent.ask(self.history)
-        self.history.pop()
-        self.history.append({"role": "assistant", "content": nao_welcome})
-        _last_nao_text = nao_welcome
-
         if RUN_ROBOT:
-            self.prompt_user()
+            self.history.append({"role": "system", "content": _DYNAMIC_SPEECH})
+            nao_welcome = self.agent.ask(self.history)
+            self.history.pop()
+
+            self.prompt_user_audio()
+
             print(f"Nao: {nao_welcome}")
             self.nao.tts.request(NaoqiTextToSpeechRequest(nao_welcome, speed=self.audio_speed,
                                 pitch=self.audio_pitch), block=False)
-            self._nao_action_and_eye_color(nao_text=_last_nao_text)
+            self._nao_action_and_eye_color(nao_text=nao_welcome)
         else:
+            nao_welcome = self.agent.ask(self.history)
             print(f"User: {_USER_WELCOME}")
             print(f"Nao: {nao_welcome}")
+
+        self.history.append({"role": "assistant", "content": nao_welcome})
+        _last_nao_text = nao_welcome
+        self.saver.update(_USER_WELCOME, nao_welcome)
 
         for _ in range(100):
             if RUN_ROBOT:
@@ -274,9 +280,8 @@ class Demo:
                                f"threshold?: {self.friendliness.threshold_met}")
             self.history.append({"role": "user", "content": user_input})
 
-            t = time.perf_counter()
-
             print("Nao:")
+            t = time.perf_counter()
             if RUN_ROBOT:
                 self.history.append({"role": "system", "content": _DYNAMIC_SPEECH})
                 resp = self.agent.ask(self.history)
@@ -284,14 +289,18 @@ class Demo:
                 print(resp)
                 self.nao.tts.request(NaoqiTextToSpeechRequest(resp, speed=self.audio_speed,
                                     pitch=self.audio_pitch), block=False)
-                self._nao_action_and_eye_color(nao_text=_last_nao_text)
+                self._nao_action_and_eye_color(nao_text=resp)
             else:
                 resp_chunks = []
                 for text in self.agent.ask_stream(self.history):
                     print(text, end="", flush=True)
                     resp_chunks.append(text)
                 resp = "".join(resp_chunks)
+                # resp = self.agent.ask(self.history)
                 self.actions.detect(nao_text=resp)
+                self.saver.update(user_input, resp, self.friendliness.scoring_history[-1], time.perf_counter() - t)
+                self.saver.save()
+                # print(resp)
 
             if last_stage == "Stage5":
                 break
@@ -299,7 +308,6 @@ class Demo:
             self._logger.debug(f"response and actions took: {time.perf_counter() - t:.3f}s")
             self.history.append({"role": "assistant", "content": resp})
             _last_nao_text = resp
-
 
 if __name__ == '__main__':
     MAIN_LOGGER.setLevel(logging.DEBUG)

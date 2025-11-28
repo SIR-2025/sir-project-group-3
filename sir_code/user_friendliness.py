@@ -17,26 +17,32 @@ class UserFriendliness:
     """
     descriptions = {
         "A": "The traveller starts with a friendly or respectful greeting",
-        "B": "The traveller shows appreciation or thanks during the conversation",
-        "C": "The traveller willingly shares personal stories or experiences",
-        "D": "The traveller engages by asking questions about your stories or preferences",
-        "E": "The traveller expresses sympathy or understanding of your experiences or stories",
-        "F": "The traveller demonstrates impatience, tries to rush the conversation, or demands information",
-        "G": "The traveller makes dismissive, rude, or disrespectful remarks",
+        "B": "The traveller talking in a friendly or kind tone",
+        "C": "The traveller talking in a polite tone",
+        "D": "The traveller talking in a cold or indifferent tone",
+        "E": "The traveller shows appreciation or thanks during the conversation",
+        "F": "The traveller willingly shares personal stories or experiences or tastes",
+        "G": "The traveller engages by asking questions about your stories or preferences",
+        "H": "The traveller expresses sympathy or understanding of your experiences or stories",
+        "I": "The traveller demonstrates impatience, tries to rush the conversation, or demands information",
+        "J": "The traveller makes dismissive, rude, or disrespectful remarks",
     }
 
     scores = {
-        "A": 1,
-        "B": 1,
-        "C": 2,
-        "D": 2,
-        "E": 2,
-        "F": -1,
-        "G": -2,
+        "A": 0.5,
+        "B": 0.25,
+        "C": 0.25,
+        "D": -0.25,
+        "E": 1,
+        "F": 1,
+        "G": 2,
+        "H": 1,
+        "I": -1,
+        "J": -2,
     }
-    _resp_regex = re.compile(r"^\s*([A-H])(?:\s*,\s*([A-H]))*\s*$")
+    _resp_regex = re.compile(r"^\s*([A-H])(?:\s*,\s*([A-J]))*\s*$")
     _logger = logging.getLogger("Demo.UserFriendliness")
-    _logger.setLevel(logging.CRITICAL)
+    _logger.setLevel(logging.DEBUG)
 
     scoring_history: List[str]
     current_score: int | float
@@ -56,12 +62,12 @@ class UserFriendliness:
         options_text = "\n".join(f"{k}) {v}" for k, v in self.descriptions.items())
         return multiline_strip(
             f"""
-            The following text is an excerpt between you and a traveller in a tavern:
+            The following text is an conversation between you and a traveller in a tavern:
             you: "{nao_text}"
             traveller: "{user_text}"
             
-            Which of the following apply (can be multiple or none)? Please answer with comma separated letters (e.g 'A,B'),
-            or simply 'None' if none apply:
+            Which of the following apply to what the traveller said (can be multiple or none)? 
+            Please answer with comma separated letters (e.g 'A,B'), or simply 'None' if none apply:
             {options_text}
             """
         )
@@ -74,7 +80,7 @@ class UserFriendliness:
             letters = ""
         else:
             assert self._resp_regex.match(resp), f"agent answer does not match regex: '{resp}'"
-            letters = "".join(sorted(re.findall(r"[A-G]", resp)))
+            letters = "".join(sorted(re.findall(r"[A-J]", resp)))
             assert len(letters) == len(set(letters)), f"agent answer has duplicate letters: '{resp}'"
 
         score = sum(self.scores[c] for c in letters)
@@ -88,6 +94,7 @@ class UserFriendliness:
         self._logger.debug(
             f"\nscoring response: {resp}, "
             f"score: {score}, "
+            f"score history: {self.scoring_history}, "
             f"current score: {self.current_score},"
             f"threshold met?: {self.threshold_met}, "
             f":\n{given_resp}"
