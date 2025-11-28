@@ -1,0 +1,25 @@
+user_text,nao_text,user_friendliness_score,nao_respond_time
+Hey there! Mind if I share a table with you? this place is packed!,"Of course, friend! Grab a seat. It’s a lively night, isn’t it? I can barely hear myself think over the chatter. You look a bit weary—long journey, perhaps? What brings you to this bustling town?",,
+"I am from far away, seeking for for something.","Ah, a seeker at heart! There’s a certain magic in pursuing the unknown. Faraway lands often hold their own stories, don’t they? What kind of thing are you searching for, if you don’t mind my curiosity? Or perhaps it's better kept as a mystery for now?",D,4.5031748749897815
+"Ah yes, I have been trekking the frozen peaks, looking for treasure, but have had no luck. Man this place is warm!","The frozen peaks, you say? That sounds both exhilarating and treacherous! I’ve had my share of chilly escapades, though the warmth of a tavern is a treasure in itself after such journeys. 
+
+What do you think of the atmosphere here? The crackling fire, the laughter—it all feels like home, doesn't it? Do you have a favorite drink or dish you like to enjoy after a long trek?",F,4.505352333013434
+I always like a ginger ale after a long and tiring journey. ,"Ah, ginger ale—a perfect choice! Refreshing and just spicy enough to spark the spirit. You know, I have a fondness for spiced mead; there’s something about it that warms the soul. 
+
+Speaking of warmth, have you noticed the stories telling themselves in the corners of this tavern? Every traveler has one. Have you ever been compelled to share your own tale? ",F,4.622185292013455
+"Absolutely, this place is full of mysteries. To be honest, I was trekking the frozen peaks to find loose dragon scales, as I heard that dragons sometimes nest there, but that is just a rumour.","Dragon scales, now that’s a bold quest! The very thought sends a shiver down the spine—but what a story it would be to tell! I once had a close encounter with a rather irritable wyvern in the Faded Valleys. I still have the singed remnants of my cloak as a reminder. 
+
+What was the most challenging part of your journey to the frozen peaks? Did you face any unexpected trials along the way?",F,4.402943916036747
+"Yes.  It was not successful, and got me into many fights with trolls and maurorders. ","Trolls and marauders? Quite the ordeal! Those brawls must have left you with some wild tales! I once found myself cornered by a band of marauders in the Whispering Woods. It took every ounce of wit and agility to escape unharmed, and let me tell you, I left with a much better respect for the shadows!
+
+What did you learn from those encounters? It’s often in the heat of battle that we discover our true selves.",DF,5.119690832972992
+Probably run faster to escape next time. Haha,"A wise lesson indeed! Sometimes discretion is the better part of valor, especially when facing trolls with less-than-friendly intentions. Speed and cunning can be just as valuable as a sword. 
+
+You know, speaking of tales and lessons, I recently stumbled upon some whispers about an ancient castle—not far from here, supposedly filled with promises of treasure and danger. There’s quite a stir around it! What would you do if you found a treasure like that? What dreams would it fulfill for you?",BDH,4.709535165980924
+"For me, I would share my plunder with the folks of this town. They have seen many a hardship and it is time that luck turned on their side. ","What a noble heart you have! Sharing your fortune with those who’ve endured hardship speaks volumes about your character. It’s often the community that makes a place truly rich, after all.
+
+You know, if you’re intrigued by that legend of the castle, perhaps a venture could be in our future. It wouldn’t be without its perils, but it might just lead to something extraordinary. 
+
+If you ever find yourself in need of guidance, I’ve heard whispers that the oldest elm in the dark forest holds secrets of its own. Maybe follow that path and see where it leads... 
+
+The night is still young. Care for another drink, or perhaps you’d like to share a few more stories?",BH,5.84169429197209
