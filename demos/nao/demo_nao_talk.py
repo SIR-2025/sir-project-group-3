@@ -28,7 +28,7 @@ class NaoTalkDemo(SICApplication):
         super(NaoTalkDemo, self).__init__()
         
         # Demo-specific initialization
-        self.nao_ip = "XXX"
+        self.nao_ip = "10.0.0.211"
         self.nao = None
         
         # Log files will only be written if set_log_file is called. Must be a valid full path to a directory.
@@ -49,6 +49,9 @@ class NaoTalkDemo(SICApplication):
         """Make NAO say something using TTS."""
         self.nao.tts.request(NaoqiTextToSpeechRequest("Say."))
         self.nao.tts.request(NaoqiTextToSpeechRequest("Hello, I am a Nao robot!"))
+        self.nao.tts.request(NaoqiTextToSpeechRequest("""
+I’ll start softly \\vol=40\\like this.\\rst\\ Now I’ll slow down \\rspd=70\\for a moment.\\rst\\ Then I’ll raise my pitch \\vct=150\\right here?\\rst\\ \\pau=600\\And now we continue.
+"""))
 
     def say_animated(self):
         """Make NAO say something with animated gestures."""
@@ -77,10 +80,10 @@ class NaoTalkDemo(SICApplication):
             # self.nao.tts.request(NaoqiTextToSpeechRequest("Hello, I am a Nao robot!"))
             self.say()
             sleep(2)
-            self.say_animated()
-            sleep(2)
-            self.say_with_gesture()
-            sleep(2)
+            # self.say_animated()
+            # sleep(2)
+            # self.say_with_gesture()
+            # sleep(2)
             self.rest()
             self.logger.info("Demo completed successfully")
         except Exception as e:
