@@ -121,7 +121,7 @@ Generate dialogue **for a NAO robot** using its TTS control tags to create natur
 
 **Pitch:** \\vct=value\\
 
-* Range: **50–200**
+* Range: **50–100**
 * Slight upward pitch for questions; slight variations for expressiveness.
 
 **Speaking rate:** \\rspd=value\\
@@ -136,7 +136,7 @@ Generate dialogue **for a NAO robot** using its TTS control tags to create natur
 
 **Volume:** \\vol=value\\
 
-* Range: **10–80**
+* Range: **80-100**
 * Small changes only; softer for calm moments.
 
 **Reset:** \\rst\\
@@ -166,7 +166,7 @@ I’ll start softly \\vol=40\\like this.\\rst\\ Now I’ll slow down \\rspd=70\\
 COLOR_MAP = {"RED": (1.00, 0.00, 0.00), "AMBER": (1.00, 0.75, 0.00), "WHITE": (1.00, 1.00, 1.00),
                          "GREEN": (0.00, 0.50, 0.00), "BRIGHT-GREEN": (0.20, 0.80, 0.20)}
 
-RUN_ROBOT = 0
+RUN_ROBOT = 1
 
 class Demo:
     _logger = logging.getLogger("Demo.main")
@@ -179,11 +179,11 @@ class Demo:
         self.history = []
         self.audio_speed = 90
         self.audio_pitch = 85
-        self.saver = Saver("out1.csv")
+        self.saver = Saver("claire.csv")
 
         if RUN_ROBOT:
             # nao config
-            self.nao = Nao(ip="10.0.0.211")
+            self.nao = Nao(ip="10.0.0.212")
             # input config
             self.desktop = Desktop()
             stt_conf = GoogleSpeechToTextConf(
@@ -199,6 +199,7 @@ class Demo:
 
 
     def prompt_user_audio(self):
+        input("\nUser speak:\n")
         result = self.stt.request(GetStatementRequest())
         # alternative is a list of possible transcripts, we take the first one which is the most likely
         user_input = result.response.alternatives[0].transcript
@@ -226,8 +227,7 @@ class Demo:
             )
             self.nao.motion_record.request(PlayRecording(NaoqiMotionRecording.load(f"actions/{action}.motion")))
 
-    def _nao_action_and_eye_color(self, nao_text):
-        actions = self.actions.detect(nao_text=nao_text)
+    def _nao_action_and_eye_color(self, actions):
         happiness = int(self.friendliness.current_score)  # clip to -5, 5 range
 
         # eye color
@@ -236,8 +236,21 @@ class Demo:
         eye_color = [col for col, t in zip(_colors, _thresholds) if happiness >= t][-1]
         print(f"NAO: *eyes are {eye_color}*")
         with TPool(max_workers=2) as executor:
-            executor.submit(self._nao_actions, actions)
+            for action in actions:
+                self._logger.debug(
+                    f"\ncurrent_action: {action},"
+                    f"\ncurrent_time: {time.perf_counter()},"
+                )
+                executor.submit(self.nao.motion_record.request, PlayRecording(NaoqiMotionRecording.load(f"actions/{action}.motion")))
+
+            self._logger.debug(
+                f"\neye_color started time: {time.perf_counter()},"
+            )
             executor.submit(self.nao.leds.request, NaoFadeRGBRequest("FaceLeds", *COLOR_MAP[eye_color], 10))
+            self._logger.debug(
+                f"\neye_color finished time: {time.perf_counter()},"
+            )
+            # executor.submit(self._nao_actions, actions)
 
     def main(self):
         self.history.append({"role": "system", "content": _AGENT_INTRO_CONTEXT})
@@ -252,9 +265,10 @@ class Demo:
             self.prompt_user_audio()
 
             print(f"Nao: {nao_welcome}")
+            actions = self.actions.detect(nao_text=nao_welcome)
             self.nao.tts.request(NaoqiTextToSpeechRequest(nao_welcome, speed=self.audio_speed,
                                 pitch=self.audio_pitch), block=False)
-            self._nao_action_and_eye_color(nao_text=nao_welcome)
+            self._nao_action_and_eye_color(actions)
         else:
             nao_welcome = self.agent.ask(self.history)
             print(f"User: {_USER_WELCOME}")
@@ -269,6 +283,7 @@ class Demo:
                 user_input = self.prompt_user_audio()
             else:
                 user_input = self.prompt_user()
+
             t = time.perf_counter()
             self.friendliness.score(nao_text=_last_nao_text, user_text=user_input)
             last_stage = self.stage.detect(nao_text=_last_nao_text)
@@ -287,9 +302,10 @@ class Demo:
                 resp = self.agent.ask(self.history)
                 self.history.pop()
                 print(resp)
+                actions = self.actions.detect(nao_text=resp)
                 self.nao.tts.request(NaoqiTextToSpeechRequest(resp, speed=self.audio_speed,
                                     pitch=self.audio_pitch), block=False)
-                self._nao_action_and_eye_color(nao_text=resp)
+                self._nao_action_and_eye_color(actions)
             else:
                 resp_chunks = []
                 for text in self.agent.ask_stream(self.history):

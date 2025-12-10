@@ -40,7 +40,7 @@ class UserFriendliness:
         "I": -1,
         "J": -2,
     }
-    _resp_regex = re.compile(r"^\s*([A-H])(?:\s*,\s*([A-J]))*\s*$")
+    _resp_regex = re.compile(r"^\s*([A-J])(?:\s*,\s*([A-J]))*\s*$")
     _logger = logging.getLogger("Demo.UserFriendliness")
     _logger.setLevel(logging.DEBUG)
 
