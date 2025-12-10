@@ -1,0 +1,35 @@
+user_text,nao_text,user_friendliness_score,nao_respond_time
+Hey there! Mind if I share a table with you? this place is packed!,"Not at all! Please, have a seat. It’s a bit of a squeeze in here, isn’t it? I can already feel the warmth of stories swirling around us. 
+
+You look a bit weary, though—long journey, I take it? Where have you come from, if you don’t mind my asking?",,
+I come from a very rainy and cloudy land. And you?,"Ah, the rain can be quite the companion, can’t it? I hail from a place where the sun dances through the trees, though the roads can have their fair share of mud. It's a mixed blessing, really.
+
+What brings you to this bustling town? Is it adventure, trade, or perhaps the allure of something sweet?",CF,5.119410875020549
+"Initially I just wanted to go on an adventure, but during my journey a merchant told me that there is a treasure around here. What about you?","Ah, treasure! It has a way of pulling folks in like a summer storm. I’ve had my fair share of adventures; sometimes they lead to riches, but often they offer experiences far more valuable. 
+
+Just the other week, I stumbled upon a hidden glade while tracking a rather mischievous fox. Would you believe there was an ancient tree there, so thick it looked like it had stories of its own? 
+
+What kind of adventure were you hoping to find? Something thrilling, perhaps?",F,4.464143541990779
+" I was hoping to meet varioius sorts of people and expand my world of view, but a treasure wouldn't hurt, since I'm out of money. But what about you? You seem like you have way more interesting stories than I do ;)","Ah, I appreciate your kind words! Meeting people is the heart of adventure, isn’t it? Everyone has a story worth telling. 
+
+Speaking of stories, there was a time when I crossed paths with a group of wandering bards. They spun tales that wrapped around the tavern like the finest silk, and they taught me a song that still echoes in my memory. It’s amazing how music can forge connections, even among strangers.
+
+So, have you had any interesting encounters on your travels so far? I can imagine a country of clouds has its fair share of characters!",BCGH,5.529566083976533
+" Unfortunately my country of clouds doesn't have many exciting stories, but i did fall off my bike in a pile opf mud before I arrived here and decided to leave that country for good forever. Do you enjoy your time here in this sunny land?","Oh, falling into a pile of mud—that's a story in itself! Every mishap can lead to a good laugh later on, even if it’s a bit mortifying at the time. 
+
+As for my time here, I do enjoy it quite a bit! This tavern has a warmth about it that feels like an embrace after a long journey. The chatter, the laughter, and the myriad stories breathing life into every corner—that’s what keeps me coming back. Plus, the stew here isn’t half bad either! Do you have a favorite dish or drink you seek out when you’re traveling?",FG,5.858161332958844
+"I have a big sweet tooth, right now I'm eating Creme Bastard every day! Anyway, enough about me, what about you? What is the real reason why you're here?","Ah, a sweet tooth! Nothing quite like a delightful treat to lift the spirits. Creme Bastard, you say? That sounds tempting! I might have to sample some before my time here is up.
+
+As for my reason for being here, I’ve come in search of stories and the camaraderie of fellow travelers. Each town has its secrets and legends, and you never know when a tale will spark a new adventure. 
+
+Speaking of legends, have you ever heard whispers of an ancient castle nearby? It’s said to hold mysteries and perhaps even treasures of its own, though there’s a tinge of danger that surrounds it. What do you think you would do if you found a treasure like that?",FG,5.4926120830350555
+"That would be amazing, please tell me more about this castle","Ah, the castle... it’s a wondrous allure wrapped in shadows, much like the tales that swirl about it. They say it stands atop a high cliff, overlooking the sea, with its crumbling stones steeped in history. Many have attempted to uncover its secrets, but it’s not an easy path. The land is full of twists and turns, and the whispers of the past can be a tad misleading.
+
+People talk of treasures hidden deep within its walls, but the castle is said to be guarded by challenges that require both wit and courage. What would you do with such a treasure, if fortune smiled upon you and guided your steps there? What dreams would you chase with a share of that gold?",BG,5.425329791964032
+I would be selfish and keep it to myself and buy a castle and give no gold to anyone. Ever.,"Ah, a bold spirit, to want to claim a castle for yourself! There's something undeniably tempting about ruling over your own domain, isn’t there? But be wary—treasure can change one’s heart and lead to unexpected paths. 
+
+Still, there's a certain thrill in imagining the feasts you could host or the walls you’d fill with memories of laughter and adventure. Just think—an echo of your own stories within those grand halls!
+
+I respect your honesty, though. In a world where trust is scarce, it’s wise to know what you truly desire. But know that sometimes, sharing those treasures, whether in gold or in story, can lead to alliances that hold their own kind of wealth. 
+
+If you ever sought more than just personal gain, there are whispers that I have heard about a key that unlocks something special within that castle... but perhaps that’s for another time. Wouldn't you agree?",DJ,6.105829250009265

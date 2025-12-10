@@ -1,3 +1,5 @@
+from typing import List, Dict
+
 
 def multiline_strip(text: str) -> str:
     return "\n".join(line.strip() for line in text.splitlines())
