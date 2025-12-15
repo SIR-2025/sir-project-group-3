@@ -7,7 +7,6 @@ from pathlib import Path
 
 from sic_framework.devices import Nao
 from sic_framework.devices.common_naoqi.naoqi_leds import NaoLEDRequest, NaoFadeRGBRequest
-from sic_framework.devices.common_naoqi.naoqi_motion import NaoqiAnimationRequest
 from sic_framework.devices.common_naoqi.naoqi_motion_recorder import NaoqiMotionRecording, PlayRecording
 from sic_framework.devices.common_naoqi.naoqi_stiffness import Stiffness
 from sic_framework.devices.common_naoqi.naoqi_text_to_speech import (
@@ -183,7 +182,7 @@ class Demo:
 
         if RUN_ROBOT:
             # nao config
-            self.nao = Nao(ip="10.0.0.212")
+            self.nao = Nao(ip="192.168.0.231")
             # input config
             self.desktop = Desktop()
             stt_conf = GoogleSpeechToTextConf(
@@ -250,7 +249,6 @@ class Demo:
             self._logger.debug(
                 f"\neye_color finished time: {time.perf_counter()},"
             )
-            # executor.submit(self._nao_actions, actions)
 
     def main(self):
         self.history.append({"role": "system", "content": _AGENT_INTRO_CONTEXT})
@@ -312,11 +310,9 @@ class Demo:
                     print(text, end="", flush=True)
                     resp_chunks.append(text)
                 resp = "".join(resp_chunks)
-                # resp = self.agent.ask(self.history)
                 self.actions.detect(nao_text=resp)
                 self.saver.update(user_input, resp, self.friendliness.scoring_history[-1], time.perf_counter() - t)
                 self.saver.save()
-                # print(resp)
 
             if last_stage == "Stage5":
                 break

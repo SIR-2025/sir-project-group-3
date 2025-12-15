@@ -7,6 +7,9 @@ CSV_FILE_PATH = Path(__file__).parent / 'static'
 assert CSV_FILE_PATH.exists(), f"Dir '{CSV_FILE_PATH}' does not exist"
 
 class Saver:
+    """
+    Class for saving necessary scores and conversation history for evaluation.
+    """
     def __init__(self, csv_name: str):
         self.csv_name = csv_name
         self.df = pd.DataFrame(columns=["user_text", "nao_text", "user_friendliness_score", "nao_respond_time"])

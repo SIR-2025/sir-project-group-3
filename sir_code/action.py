@@ -10,8 +10,8 @@ _ = MAIN_LOGGER # ensure logging setup is complete
 
 class Action:
     """
-
-
+    Class for detecting the right actions matching current Nao response.
+    There are 6 pre-recorded actions that we ask the agent to make, each is a boolean characterisation.
     """
     descriptions = {
         "A": "Nod your head",
@@ -20,7 +20,6 @@ class Action:
         "E": "Lift one arm to your chin, pointing to yourself",
         "F": "Place a hand over your heart, show respect",
         "G": "Gently tap your lips or temple to suggest secrecy or whispering",
-        # "H": "Tilt your head slightly to the side to show attentiveness",
     }
 
     _resp_regex = re.compile(r"^\s*([A-H])(?:\s*,\s*([A-H]))*\s*$")

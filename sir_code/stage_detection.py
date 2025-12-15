@@ -11,8 +11,7 @@ _ = MAIN_LOGGER # ensure logging setup is complete
 
 class StageDetection:
     """
-
-
+    Class for detect which stage the current turn of conversation is in.
     """
     descriptions = {
         "Stage1": """**First Contact & Observations**
@@ -87,7 +86,7 @@ class StageDetection:
         given_resp = "\n".join(f"{k}) {v}" for k, v in self.descriptions.items() if k in letters)
         self._logger.debug(
             f"\ndetect response: {resp}, "
-            # f":\n{given_resp}, "
+            f":\n{given_resp}, "
             f"\nletters: {letters}, "
             f":\ncurrent stage: {self.current_stage}, "
         )

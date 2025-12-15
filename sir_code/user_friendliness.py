@@ -11,9 +11,8 @@ _ = MAIN_LOGGER # ensure logging setup is complete
 
 class UserFriendliness:
     """
-    Class for recording and scoring User friendliness. There are 7 characterisations that we ask the agent to make,
+    Class for recording and scoring User friendliness. There are 10 characterisations that we ask the agent to make,
     each is a boolean characterisation and has an associated scoring if positive.
-
     """
     descriptions = {
         "A": "The traveller starts with a friendly or respectful greeting",
