@@ -1,3 +1,33 @@
+# Setup and Dependencies
+
+To get started with this project, please follow these steps to install the required dependencies.
+
+1.  **Create a Virtual Environment (Recommended):**
+    ```bash
+    python -m venv .venv
+    ```
+
+2.  **Activate the Virtual Environment:**
+    *   **On macOS/Linux:**
+        ```bash
+        source .venv/bin/activate
+        ```
+    *   **On Windows (Command Prompt):**
+        ```bash
+        .venv\Scripts\activate.bat
+        ```
+    *   **On Windows (PowerShell):**
+        ```bash
+        .venv\Scripts\Activate.ps1
+        ```
+
+3.  **Install Dependencies:**
+    With your virtual environment activated, install all necessary packages:
+    ```bash
+    pip install -r sir_code/requirements.txt
+    ```
+
+
 # Configuration Files
 
 In the `sir_code/conf` directory, add your OpenAI key and Google key in the following files:
