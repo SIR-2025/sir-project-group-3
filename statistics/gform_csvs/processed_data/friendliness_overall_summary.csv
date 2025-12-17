@@ -1,0 +1,2 @@
+n_chats,n_turns_total,overall_mean_soft_jaccard_llm,overall_std_soft_jaccard_llm_across_chats,overall_mean_soft_jaccard_human_baseline,overall_std_soft_jaccard_human_baseline_across_chats
+5,36,0.43788108528898,0.10476487972880942,0.4086062022956649,0.0750393172090636

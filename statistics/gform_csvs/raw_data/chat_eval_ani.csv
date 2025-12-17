@@ -1,0 +1,53 @@
+"Timestamp","This question is about NAO's response.
+
+How relevant was NAO's response to the current user input?","This question is about NAO's response.
+
+How relevant was NAO's response in relation to the earlier chat history (including the current round)?","This question is about the USER's input.
+
+Score the friendliness of the USER (refferred to as the traveller), by ticking the appropriate boxes. You can tick any number of boxes. Ticking no boxes indicates that the USER (traveller) has a neutral tone.","This question is about NAO's response.
+
+How relevant was NAO's response to the current user input?","This question is about NAO's response.
+
+How relevant was NAO's response in relation to the earlier chat history (including the current round)?","This question is about the USER's input.
+
+Score the friendliness of the USER (refferred to as the traveller), by ticking the appropriate boxes. You can tick any number of boxes. Ticking no boxes indicates that the USER (traveller) has a neutral tone.","This question is about NAO's response.
+
+How relevant was NAO's response to the current user input?","This question is about NAO's response.
+
+How relevant was NAO's response in relation to the earlier chat history (including the current round)?","This question is about the USER's input.
+
+Score the friendliness of the USER (refferred to as the traveller), by ticking the appropriate boxes. You can tick any number of boxes. Ticking no boxes indicates that the USER (traveller) has a neutral tone.","This question is about NAO's response.
+
+How relevant was NAO's response to the current user input?","This question is about NAO's response.
+
+How relevant was NAO's response in relation to the earlier chat history (including the current round)?","This question is about the USER's input.
+
+Score the friendliness of the USER (refferred to as the traveller), by ticking the appropriate boxes. You can tick any number of boxes. Ticking no boxes indicates that the USER (traveller) has a neutral tone.","This question is about NAO's response.
+
+How relevant was NAO's response to the current user input?","This question is about NAO's response.
+
+How relevant was NAO's response in relation to the earlier chat history (including the current round)?","This question is about the USER's input.
+
+Score the friendliness of the USER (refferred to as the traveller), by ticking the appropriate boxes. You can tick any number of boxes. Ticking no boxes indicates that the USER (traveller) has a neutral tone.","This question is about NAO's response.
+
+How relevant was NAO's response to the current user input?","This question is about NAO's response.
+
+How relevant was NAO's response in relation to the earlier chat history (including the current round)?","This question is about the USER's input.
+
+Score the friendliness of the USER (refferred to as the traveller), by ticking the appropriate boxes. You can tick any number of boxes. Ticking no boxes indicates that the USER (traveller) has a neutral tone.","This question is about NAO's response.
+
+How relevant was NAO's response to the current user input?","This question is about NAO's response.
+
+How relevant was NAO's response in relation to the earlier chat history (including the current round)?","This question is about the USER's input.
+
+Score the friendliness of the USER (refferred to as the traveller), by ticking the appropriate boxes. You can tick any number of boxes. Ticking no boxes indicates that the USER (traveller) has a neutral tone.","This question is about NAO's response.
+
+How relevant was NAO's response to the current user input?","This question is about NAO's response.
+
+How relevant was NAO's response in relation to the earlier chat history (including the current round)?","This question is about the USER's input.
+
+Score the friendliness of the USER (refferred to as the traveller), by ticking the appropriate boxes. You can tick any number of boxes. Ticking no boxes indicates that the USER (traveller) has a neutral tone."
+"2025/12/01 4:13:55 PM GMT+1","4","4","A: The traveller starts with a friendly or respectful greeting;B: The traveller talking in a friendly or kind tone;C: The traveller talking in a polite tone","4","4","B: The traveller talking in a friendly or kind tone;F: The traveller willingly shares personal stories or experiences or tastes;G: The traveller engages by asking questions about your stories or preferences","3","4","C: The traveller talking in a polite tone","4","4","B: The traveller talking in a friendly or kind tone;G: The traveller engages by asking questions about your stories or preferences","4","4","B: The traveller talking in a friendly or kind tone;F: The traveller willingly shares personal stories or experiences or tastes","4","4","F: The traveller willingly shares personal stories or experiences or tastes;H: The traveller expresses sympathy or understanding of your experiences or stories","4","4","C: The traveller talking in a polite tone;G: The traveller engages by asking questions about your stories or preferences","4","4","B: The traveller talking in a friendly or kind tone"
+"2025/12/03 1:22:53 PM GMT+1","4","4","A: The traveller starts with a friendly or respectful greeting;C: The traveller talking in a polite tone","4","4","B: The traveller talking in a friendly or kind tone","4","4","C: The traveller talking in a polite tone;F: The traveller willingly shares personal stories or experiences or tastes","4","4","G: The traveller engages by asking questions about your stories or preferences","4","4","C: The traveller talking in a polite tone;F: The traveller willingly shares personal stories or experiences or tastes","4","4","F: The traveller willingly shares personal stories or experiences or tastes","4","4","C: The traveller talking in a polite tone","4","4","C: The traveller talking in a polite tone"
+"2025/12/03 1:26:35 PM GMT+1","3","3","A: The traveller starts with a friendly or respectful greeting;B: The traveller talking in a friendly or kind tone;C: The traveller talking in a polite tone;G: The traveller engages by asking questions about your stories or preferences","4","4","B: The traveller talking in a friendly or kind tone;C: The traveller talking in a polite tone;E: The traveller shows appreciation or thanks during the conversation;G: The traveller engages by asking questions about your stories or preferences;H: The traveller expresses sympathy or understanding of your experiences or stories","4","4","C: The traveller talking in a polite tone","4","4","G: The traveller engages by asking questions about your stories or preferences","4","4","B: The traveller talking in a friendly or kind tone;C: The traveller talking in a polite tone;F: The traveller willingly shares personal stories or experiences or tastes","4","4","C: The traveller talking in a polite tone;F: The traveller willingly shares personal stories or experiences or tastes","4","4","B: The traveller talking in a friendly or kind tone;C: The traveller talking in a polite tone;E: The traveller shows appreciation or thanks during the conversation;F: The traveller willingly shares personal stories or experiences or tastes;G: The traveller engages by asking questions about your stories or preferences","4","4","C: The traveller talking in a polite tone;G: The traveller engages by asking questions about your stories or preferences"
+"2025/12/16 11:55:34 AM GMT+1","4","4","A: The traveller starts with a friendly or respectful greeting","4","4","B: The traveller talking in a friendly or kind tone;F: The traveller willingly shares personal stories or experiences or tastes;G: The traveller engages by asking questions about your stories or preferences","4","4","B: The traveller talking in a friendly or kind tone;F: The traveller willingly shares personal stories or experiences or tastes","4","4","F: The traveller willingly shares personal stories or experiences or tastes;G: The traveller engages by asking questions about your stories or preferences","3","4","F: The traveller willingly shares personal stories or experiences or tastes","4","4","F: The traveller willingly shares personal stories or experiences or tastes","4","4","B: The traveller talking in a friendly or kind tone","4","4",""
